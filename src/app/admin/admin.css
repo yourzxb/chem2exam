@@ -1,0 +1,1516 @@
+.admin-page {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid rgba(223, 231, 239, 0.9);
+  border-radius: 8px;
+  padding: 18px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3.1rem);
+  line-height: 1.08;
+}
+
+.admin-header-copy {
+  max-width: 760px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.admin-hero-visual {
+  display: grid;
+  grid-template-columns: 86px 64px 58px;
+  gap: 8px;
+  align-items: center;
+  min-width: 220px;
+}
+
+.admin-auth {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 28px rgba(33, 48, 70, 0.06);
+}
+
+.admin-section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.admin-section-nav a {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font-weight: 900;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.admin-section-nav a:hover {
+  border-color: rgba(74, 157, 144, 0.28);
+  background: #edf6f4;
+  color: var(--teal-dark);
+  transform: translateY(-1px);
+}
+
+.admin-command-board {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.35fr);
+  gap: 14px;
+}
+
+.admin-readiness-card,
+.admin-command-stats {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-readiness-card {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.admin-readiness-card h2 {
+  margin: 2px 0 6px;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.admin-readiness-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.admin-readiness-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.admin-command-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-workbench {
+  display: grid;
+  gap: 16px;
+  border: 1px solid rgba(74, 157, 144, 0.22);
+  border-radius: 8px;
+  padding: 16px;
+  background: #edf6f4;
+}
+
+.workbench-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr) 92px;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid rgba(74, 157, 144, 0.22);
+  border-radius: 8px;
+  padding: 18px;
+  background: #fff;
+}
+
+.workbench-hero h2,
+.workbench-hero p {
+  margin: 0;
+}
+
+.workbench-hero h2 {
+  margin-top: 4px;
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+  line-height: 1.18;
+}
+
+.workbench-hero p {
+  margin-top: 10px;
+  max-width: 760px;
+  color: var(--muted);
+}
+
+.workbench-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.workbench-steps span,
+.admin-safety-strip span {
+  border: 1px solid rgba(74, 157, 144, 0.24);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: #f8fbfa;
+  color: var(--teal-dark);
+  font-size: 0.92rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.school-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.school-kpi-strip div {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(223, 231, 239, 0.95);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.school-kpi-strip span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.school-kpi-strip strong {
+  font-size: 1.55rem;
+  line-height: 1.1;
+}
+
+.admin-workbench .organization-panel,
+.admin-workbench .school-summary-panel {
+  margin-bottom: 0;
+}
+
+.admin-auth form {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(120px, 180px) minmax(120px, 180px) auto auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-auth div {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-auth span,
+.muted-copy {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.admin-auth input,
+.admin-form input,
+.admin-form select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  font: inherit;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.ai-form-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  border: 1px solid rgba(74, 157, 144, 0.22);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f8fbfa;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.ai-status-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.organization-panel {
+  margin-bottom: 18px;
+}
+
+.organization-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.organization-panel .admin-form {
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) minmax(110px, auto) auto;
+  margin-bottom: 0;
+}
+
+.organization-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.organization-lists h3 {
+  margin: 0 0 8px;
+}
+
+.organization-row {
+  grid-template-columns: minmax(160px, 1fr) minmax(120px, auto) auto auto;
+}
+
+.class-teacher-management {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.class-teacher-management-title,
+.class-teacher-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.class-teacher-management-title h3 {
+  margin: 0 0 4px;
+}
+
+.class-teacher-tools {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 10px;
+}
+
+.class-teacher-tools select,
+.class-teacher-row select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.class-teacher-list {
+  display: grid;
+  gap: 8px;
+}
+
+.class-teacher-row {
+  grid-template-columns: minmax(180px, 1fr) auto auto minmax(120px, auto);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8fbfa;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.class-teacher-row div {
+  display: grid;
+  gap: 4px;
+}
+
+.class-teacher-row span {
+  color: var(--muted);
+}
+
+.directory-search-panel {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #f8fbfa;
+}
+
+.directory-search-panel h3,
+.batch-student-form h3 {
+  margin: 0 0 4px;
+}
+
+.directory-search-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) auto;
+  gap: 10px;
+}
+
+.directory-search-row input,
+.batch-student-form select,
+.batch-student-form textarea {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.directory-search-row input,
+.batch-student-form select {
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.directory-result-list {
+  display: grid;
+  gap: 8px;
+}
+
+.directory-result-button {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.directory-result-button:hover {
+  border-color: #2b776f;
+  box-shadow: 0 10px 26px rgba(33, 48, 70, 0.07);
+}
+
+.directory-result-button span,
+.directory-result-button small,
+.batch-student-result span,
+.batch-student-result small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.batch-student-form {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.2fr) minmax(200px, 0.8fr) minmax(260px, 1.4fr) auto;
+  gap: 12px;
+  align-items: start;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.batch-student-form textarea {
+  min-height: 96px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.batch-student-result {
+  display: grid;
+  gap: 4px;
+  grid-column: 1 / -1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+}
+
+.school-summary-panel {
+  margin-bottom: 18px;
+}
+
+.school-summary-header,
+.summary-section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.school-summary-actions {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  gap: 10px;
+}
+
+.school-summary-actions select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.school-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.school-summary-cards div {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fbfa;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.school-summary-cards span,
+.summary-section-title span,
+.school-class-summary-row span,
+.school-literacy-row span,
+.school-literacy-row small {
+  color: var(--muted);
+}
+
+.school-summary-cards strong {
+  font-size: 1.35rem;
+}
+
+.school-summary-content {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+}
+
+.school-class-summary-list,
+.school-literacy-list {
+  display: grid;
+  gap: 8px;
+}
+
+.school-class-summary-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(140px, 1fr) auto auto auto auto auto auto;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding: 10px 8px;
+  transition: background 160ms ease;
+}
+
+.school-literacy-row {
+  display: grid;
+  gap: 5px;
+  border-top: 1px solid var(--line);
+  padding: 10px 8px;
+  transition: background 160ms ease;
+}
+
+.school-literacy-row small {
+  line-height: 1.5;
+}
+
+.admin-panel {
+  padding: 18px;
+}
+
+.admin-panel h2 {
+  margin: 0 0 12px;
+  line-height: 1.22;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.admin-list,
+.relation-list {
+  display: grid;
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding: 10px 8px;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.admin-row span {
+  color: var(--muted);
+}
+
+.question-row {
+  grid-template-columns: minmax(220px, 1fr) 50px auto minmax(80px, auto);
+}
+
+.admin-question-list {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.admin-question-filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f8fbfa;
+}
+
+.admin-question-filters input,
+.admin-question-filters select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.admin-filter-schemes {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f8fbfa;
+}
+
+.filter-save-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 140px auto auto;
+  gap: 10px;
+}
+
+.filter-save-row input,
+.filter-save-row select,
+.filter-scheme-import {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.filter-scheme-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-scheme-import {
+  min-height: 82px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.filter-scheme-list {
+  display: grid;
+  gap: 8px;
+}
+
+.filter-scheme-group {
+  display: grid;
+  gap: 8px;
+}
+
+.filter-scheme-group p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.filter-scheme {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.filter-scheme.active {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+.filter-scheme button:first-child {
+  display: grid;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+
+.filter-scheme span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.admin-question-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.admin-question-item button {
+  display: grid;
+  gap: 6px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+
+.admin-question-item.active {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14, 116, 112, 0.12);
+}
+
+.admin-question-item span,
+.admin-question-item small {
+  color: var(--muted);
+}
+
+.admin-question-check {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.admin-question-check input {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-batch-edit {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: end;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 14px;
+  padding: 12px;
+  background: #f8fbfa;
+}
+
+.admin-batch-edit .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.admin-batch-edit select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.admin-batch-edit input {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+  font: inherit;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.admin-batch-preview {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  background: #fffdf7;
+}
+
+.batch-preview-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.batch-preview-summary span {
+  border: 1px solid #f2d08a;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #fff7dc;
+  color: #6f4b00;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.batch-preview-list {
+  display: grid;
+  gap: 8px;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.batch-preview-item {
+  display: grid;
+  gap: 5px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.batch-preview-item span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.batch-confirm-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  color: #6f4b00;
+  font-weight: 900;
+}
+
+.batch-confirm-row input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.admin-question-edit {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 14px;
+  padding: 12px;
+  background: #f8fbfa;
+}
+
+.admin-question-edit label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.admin-question-edit input,
+.admin-question-edit select,
+.admin-question-edit textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  font: inherit;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.admin-question-edit textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.admin-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.relation-panel {
+  margin-top: 18px;
+}
+
+.ai-panel {
+  margin-top: 18px;
+}
+
+.paper-panel {
+  margin-top: 18px;
+}
+
+.audit-panel {
+  margin-top: 18px;
+}
+
+.ai-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.ai-model-form {
+  grid-template-columns: 130px 1.3fr 1fr 1.2fr;
+}
+
+.ai-model-form .primary-button {
+  grid-column: span 4;
+  justify-self: start;
+}
+
+.ai-task-form {
+  grid-template-columns: minmax(180px, 1fr) minmax(190px, 1fr) minmax(190px, 1fr) 90px auto;
+}
+
+.ai-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.ai-lists h3 {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.ai-row {
+  grid-template-columns: minmax(100px, 0.9fr) minmax(140px, 1fr) minmax(90px, auto) auto;
+}
+
+.task-row {
+  grid-template-columns: minmax(120px, 1fr) auto minmax(100px, auto) auto minmax(100px, auto) auto;
+}
+
+.task-row small {
+  grid-column: 1 / -1;
+  color: #9f3a38;
+  line-height: 1.5;
+}
+
+.paper-form {
+  display: grid;
+  gap: 14px;
+}
+
+.paper-meta-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.5fr) 110px 150px 110px 130px minmax(220px, 1fr);
+  gap: 10px;
+}
+
+.paper-meta-grid input,
+.paper-meta-grid select,
+.paper-text-grid textarea {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.paper-meta-grid input,
+.paper-meta-grid select {
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.paper-text-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.paper-text-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.paper-text-grid textarea {
+  min-height: 170px;
+  resize: vertical;
+  padding: 10px;
+}
+
+.import-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.import-result span {
+  color: var(--muted);
+}
+
+.relation-form {
+  grid-template-columns: 1fr 1fr 220px auto;
+}
+
+.relation-row {
+  grid-template-columns: minmax(160px, 1fr) 180px minmax(160px, 1fr);
+}
+
+.audit-filter-form {
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) minmax(220px, 1fr) auto;
+}
+
+.audit-jump {
+  margin-bottom: 10px;
+}
+
+.audit-record-list {
+  display: grid;
+  gap: 8px;
+}
+
+.audit-record-item {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, auto) minmax(160px, auto);
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding: 10px 8px;
+  transition: background 160ms ease;
+}
+
+.audit-record-item span,
+.audit-record-item small {
+  color: var(--muted);
+}
+
+.audit-record-item small {
+  grid-column: 1 / -1;
+  line-height: 1.5;
+}
+
+.admin-auth input:focus,
+.admin-form input:focus,
+.admin-form select:focus,
+.class-teacher-tools select:focus,
+.class-teacher-row select:focus,
+.directory-search-row input:focus,
+.batch-student-form select:focus,
+.batch-student-form textarea:focus,
+.school-summary-actions select:focus,
+.admin-question-filters input:focus,
+.admin-question-filters select:focus,
+.filter-save-row input:focus,
+.filter-save-row select:focus,
+.filter-scheme-import:focus,
+.admin-batch-edit input:focus,
+.admin-batch-edit select:focus,
+.admin-question-edit input:focus,
+.admin-question-edit select:focus,
+.admin-question-edit textarea:focus,
+.paper-meta-grid input:focus,
+.paper-meta-grid select:focus,
+.paper-text-grid textarea:focus {
+  outline: 0;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.admin-row:hover,
+.school-class-summary-row:hover,
+.school-literacy-row:hover,
+.audit-record-item:hover {
+  background: #f8fbfa;
+}
+
+.class-teacher-row:hover,
+.school-summary-cards div:hover,
+.filter-scheme:hover,
+.admin-question-item:hover {
+  border-color: rgba(15, 118, 110, 0.28);
+  box-shadow: 0 10px 26px rgba(33, 48, 70, 0.07);
+}
+
+.text-button:hover {
+  color: var(--teal-dark);
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 980px) {
+  .admin-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-auth form,
+  .admin-grid,
+    .organization-grid,
+    .organization-panel .admin-form,
+    .organization-lists,
+    .directory-search-row,
+    .batch-student-form,
+    .class-teacher-management-title,
+  .class-teacher-tools,
+  .class-teacher-row,
+  .school-summary-header,
+  .school-summary-actions,
+  .school-summary-cards,
+  .school-summary-content,
+  .school-class-summary-row,
+  .admin-form,
+  .admin-question-filters,
+  .filter-save-row,
+  .filter-scheme-tools,
+  .filter-scheme,
+  .ai-model-form,
+  .ai-task-form,
+  .ai-lists,
+  .paper-meta-grid,
+  .paper-text-grid,
+  .relation-form,
+  .admin-edit-grid,
+  .admin-batch-edit,
+  .admin-row,
+  .organization-row,
+  .question-row,
+  .ai-row,
+  .task-row,
+  .relation-row,
+  .audit-filter-form,
+  .audit-record-item {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-model-form .primary-button {
+    grid-column: auto;
+  }
+}
+
+/* UI engineer pass: admin side should feel safe, segmented, and auditable. */
+.admin-header,
+.admin-auth,
+.admin-readiness-card,
+.admin-command-stats,
+.admin-workbench,
+.workbench-hero,
+.admin-panel {
+  border-color: var(--panel-border);
+  box-shadow: var(--shadow-control);
+}
+
+.admin-header {
+  position: relative;
+  padding: 22px;
+  overflow: hidden;
+}
+
+.admin-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 6px;
+  background: var(--teal);
+}
+
+.admin-header h1 {
+  max-width: 800px;
+  font-size: clamp(2rem, 4vw, 3.45rem);
+}
+
+.admin-hero-visual {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8fbfa;
+}
+
+.admin-section-nav {
+  top: 8px;
+  box-shadow: var(--shadow-control);
+}
+
+.admin-section-nav a {
+  background: #fff;
+}
+
+.admin-auth,
+.admin-readiness-card,
+.admin-command-stats,
+.workbench-hero,
+.admin-panel,
+.school-kpi-strip div,
+.school-summary-cards div,
+.directory-search-panel,
+.admin-filter-schemes,
+.admin-question-filters {
+  background: #fff;
+}
+
+.admin-workbench {
+  background: #f3faf8;
+}
+
+.admin-command-board {
+  grid-template-columns: minmax(340px, 0.9fr) minmax(460px, 1.4fr);
+}
+
+.admin-command-stats {
+  align-content: stretch;
+}
+
+.admin-command-stats .ui-stat-card {
+  min-height: 116px;
+}
+
+.workbench-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr) 92px;
+}
+
+.workbench-steps span,
+.admin-safety-strip span {
+  background: #fff;
+}
+
+.admin-auth input,
+.admin-form input,
+.admin-form select,
+.class-teacher-tools select,
+.class-teacher-row select,
+.directory-search-row input,
+.batch-student-form select,
+.batch-student-form textarea,
+.school-summary-actions select,
+.admin-question-filters input,
+.admin-question-filters select,
+.filter-save-row input,
+.filter-save-row select,
+.filter-scheme-import,
+.admin-batch-edit input,
+.admin-batch-edit select,
+.admin-question-edit input,
+.admin-question-edit select,
+.admin-question-edit textarea,
+.paper-meta-grid input,
+.paper-meta-grid select,
+.paper-text-grid textarea {
+  background: var(--field-bg);
+}
+
+.admin-auth input:focus,
+.admin-form input:focus,
+.admin-form select:focus,
+.class-teacher-tools select:focus,
+.class-teacher-row select:focus,
+.directory-search-row input:focus,
+.batch-student-form select:focus,
+.batch-student-form textarea:focus,
+.school-summary-actions select:focus,
+.admin-question-filters input:focus,
+.admin-question-filters select:focus,
+.filter-save-row input:focus,
+.filter-save-row select:focus,
+.filter-scheme-import:focus,
+.admin-batch-edit input:focus,
+.admin-batch-edit select:focus,
+.admin-question-edit input:focus,
+.admin-question-edit select:focus,
+.admin-question-edit textarea:focus,
+.paper-meta-grid input:focus,
+.paper-meta-grid select:focus,
+.paper-text-grid textarea:focus {
+  box-shadow: 0 0 0 3px rgba(74, 157, 144, 0.14);
+  background: #fff;
+}
+
+.admin-panel h2,
+.school-summary-header,
+.summary-section-title {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.admin-list,
+.relation-list,
+.audit-record-list {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.admin-row,
+.audit-record-item,
+.school-class-summary-row,
+.school-literacy-row {
+  border-top-color: var(--panel-border);
+}
+
+.admin-row:first-child,
+.audit-record-item:first-child,
+.school-class-summary-row:first-child,
+.school-literacy-row:first-child {
+  border-top: 0;
+}
+
+.admin-question-list {
+  max-height: 460px;
+  scrollbar-color: rgba(74, 157, 144, 0.42) transparent;
+}
+
+.admin-question-item,
+.filter-scheme,
+.class-teacher-row,
+.directory-result-button,
+.batch-student-result {
+  border-color: var(--panel-border);
+}
+
+.import-result {
+  align-items: center;
+  border: 1px solid rgba(74, 157, 144, 0.18);
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fbfa;
+}
+
+@media (max-width: 1120px) {
+  .admin-command-board,
+  .workbench-hero,
+  .admin-command-stats,
+  .school-kpi-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Final admin polish: make dense operations safer and easier to audit. */
+.admin-header {
+  padding: 20px 22px;
+}
+
+.admin-header h1 {
+  max-width: 780px;
+}
+
+.admin-section-nav {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  border-color: var(--panel-border);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.admin-section-nav button.active {
+  background: var(--teal-dark);
+  color: #fff;
+}
+
+.admin-readiness-card,
+.admin-command-stats > *,
+.workbench-hero,
+.admin-panel,
+.school-summary-cards div,
+.admin-filter-schemes,
+.admin-question-filters,
+.admin-batch-edit,
+.admin-question-edit,
+.paper-panel,
+.audit-panel {
+  border-color: var(--panel-border);
+}
+
+.admin-readiness-card,
+.workbench-hero,
+.admin-panel {
+  box-shadow: var(--shadow-control);
+}
+
+.admin-readiness-badges span,
+.workbench-steps span,
+.school-kpi-strip div,
+.school-summary-cards div,
+.ai-status-cards > *,
+.batch-preview-summary span {
+  border-radius: 8px;
+}
+
+.workbench-steps span {
+  background: var(--teal-50);
+  border-color: rgba(74, 157, 144, 0.16);
+}
+
+.organization-panel {
+  border-color: rgba(74, 157, 144, 0.24);
+}
+
+.admin-form,
+.class-teacher-tools,
+.directory-search-row,
+.batch-student-form,
+.school-summary-actions,
+.admin-question-filters,
+.filter-save-row,
+.filter-scheme-tools,
+.admin-batch-edit,
+.audit-filter-form,
+.paper-meta-grid {
+  align-items: end;
+}
+
+.admin-form label,
+.class-teacher-tools label,
+.admin-question-filters label,
+.filter-save-row label,
+.admin-question-edit label,
+.paper-meta-grid label,
+.paper-text-grid label,
+.audit-filter-form label {
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+
+.directory-search-panel,
+.batch-student-form,
+.admin-filter-schemes,
+.admin-batch-edit,
+.admin-question-edit,
+.import-result {
+  background: #fbfcfd;
+}
+
+.directory-result-button:hover,
+.filter-scheme:hover,
+.admin-question-item:hover,
+.audit-record-item:hover,
+.school-class-summary-row:hover,
+.school-literacy-row:hover {
+  background: var(--teal-50);
+}
+
+.filter-scheme.active,
+.admin-question-item.active {
+  border-color: rgba(74, 157, 144, 0.5);
+  box-shadow: 0 0 0 3px rgba(74, 157, 144, 0.12);
+}
+
+.admin-question-item strong,
+.batch-preview-item strong {
+  line-height: 1.45;
+}
+
+.admin-question-list,
+.batch-preview-list,
+.audit-record-list {
+  scrollbar-color: rgba(74, 157, 144, 0.42) transparent;
+}
+
+.batch-confirm-row {
+  border: 1px solid rgba(242, 153, 74, 0.24);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--orange-50);
+}
+
+.ai-status-cards > * {
+  background: #fff;
+  border: 1px solid var(--panel-border);
+}
+
+.paper-text-grid textarea {
+  line-height: 1.65;
+}
+
+.audit-record-item {
+  gap: 8px;
+}
+
+.audit-record-item code,
+.batch-preview-item code,
+.admin-question-item code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .admin-header,
+  .admin-auth,
+  .admin-form,
+  .class-teacher-tools,
+  .directory-search-row,
+  .batch-student-form,
+  .school-summary-header,
+  .school-summary-actions,
+  .admin-question-filters,
+  .filter-save-row,
+  .filter-scheme-tools,
+  .admin-batch-edit,
+  .batch-confirm-row,
+  .audit-filter-form {
+    align-items: stretch;
+  }
+
+  .admin-section-nav {
+    position: static;
+  }
+}

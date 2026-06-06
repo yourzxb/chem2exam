@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChemGraph 个性化化学测试</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="auth-view" id="authView">
+        <div class="brand-panel">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 84 84" role="img">
+              <circle cx="42" cy="42" r="36" fill="#f5fbff" stroke="#0f766e" stroke-width="3" />
+              <path d="M29 22h26M37 22v16L24 60c-2 4 1 8 6 8h24c5 0 8-4 6-8L47 38V22" fill="none" stroke="#0f766e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="35" cy="57" r="3" fill="#f97316" />
+              <circle cx="47" cy="52" r="4" fill="#2563eb" />
+            </svg>
+          </div>
+          <h1>ChemGraph</h1>
+          <p>按年级进入知识图谱测试。答错时系统会追溯上一级知识点，补清前置内容后再回到当前薄弱点。</p>
+        </div>
+
+        <form class="auth-card" id="authForm">
+          <div class="mode-switch" role="tablist" aria-label="登录或注册">
+            <button class="mode-button active" type="button" data-mode="login">登录</button>
+            <button class="mode-button" type="button" data-mode="register">注册</button>
+          </div>
+          <label>
+            用户名
+            <input id="username" name="username" autocomplete="username" required minlength="2" placeholder="输入用户名" />
+          </label>
+          <label>
+            密码
+            <input id="password" name="password" type="password" autocomplete="current-password" required minlength="4" placeholder="至少 4 位" />
+          </label>
+          <button class="primary-button" type="submit" id="authSubmit">登录进入</button>
+          <p class="form-message" id="authMessage"></p>
+        </form>
+      </section>
+
+      <section class="dashboard-view hidden" id="dashboardView">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">个性化化学测试</p>
+            <h1 id="welcomeTitle">欢迎回来</h1>
+          </div>
+          <button class="ghost-button" id="logoutButton" type="button">退出</button>
+        </header>
+
+        <section class="grade-strip" aria-label="选择年级">
+          <button class="grade-button active" type="button" data-grade="初三">初三</button>
+          <button class="grade-button" type="button" data-grade="高一">高一</button>
+          <button class="grade-button" type="button" data-grade="高二">高二</button>
+          <button class="grade-button" type="button" data-grade="高三">高三</button>
+        </section>
+
+        <section class="reward-board" aria-label="积分与奖励">
+          <article class="level-card">
+            <div>
+              <p class="eyebrow">学习等级</p>
+              <h2 id="levelText">Lv.1 化学新手</h2>
+            </div>
+            <div class="xp-track" aria-label="经验进度">
+              <span id="xpFill"></span>
+            </div>
+            <p id="xpText">0 / 100 XP</p>
+          </article>
+          <article>
+            <span class="reward-icon">◆</span>
+            <strong id="gemText">0</strong>
+            <p>宝石</p>
+          </article>
+          <article>
+            <span class="reward-icon">●</span>
+            <strong id="streakText">0</strong>
+            <p>连续学习天数</p>
+          </article>
+          <article>
+            <span class="reward-icon">♥</span>
+            <strong id="heartText">5 / 5</strong>
+            <p>生命值</p>
+          </article>
+        </section>
+
+        <section class="badge-shelf" aria-label="徽章奖励">
+          <div>
+            <p class="eyebrow">徽章</p>
+            <h2>学习成就</h2>
+          </div>
+          <div class="badge-list" id="badgeList"></div>
+        </section>
+
+        <section class="main-grid">
+          <div class="graph-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow" id="gradeLabel">初三</p>
+                <h2>知识图谱</h2>
+              </div>
+              <div class="legend">
+                <span><i class="dot mastered"></i>已掌握</span>
+                <span><i class="dot weak"></i>待巩固</span>
+                <span><i class="dot current"></i>测试中</span>
+              </div>
+            </div>
+            <div class="graph-canvas" id="graphCanvas" aria-live="polite"></div>
+          </div>
+
+          <aside class="test-panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">当前路径</p>
+                <h2 id="topicTitle">物质的变化</h2>
+              </div>
+              <span class="score-pill" id="scorePill">0 / 0</span>
+            </div>
+
+            <div class="trace-box" id="traceBox">
+              <span>学习路径</span>
+              <p id="traceText">从当前知识点开始测试。</p>
+            </div>
+
+            <article class="question-card">
+              <p class="question-kicker" id="questionKicker">第 1 题</p>
+              <h3 id="questionText"></h3>
+              <div class="option-list" id="optionList"></div>
+              <p class="feedback" id="feedbackText"></p>
+            </article>
+
+            <div class="actions">
+              <button class="secondary-button" type="button" id="startButton">开始本节点测试</button>
+              <button class="primary-button" type="button" id="nextButton" disabled>下一题</button>
+            </div>
+          </aside>
+        </section>
+
+        <section class="insight-row">
+          <article>
+            <span id="masteredCount">0</span>
+            <p>已掌握节点</p>
+          </article>
+          <article>
+            <span id="weakCount">0</span>
+            <p>待巩固节点</p>
+          </article>
+          <article>
+            <span id="reviewCount">0</span>
+            <p>追溯复测次数</p>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

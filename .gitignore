@@ -1,0 +1,13 @@
+.DS_Store
+.next/
+node_modules/
+.npm-cache/
+dist/
+coverage/
+outputs/
+.env
+.env.local
+*.log
+tsconfig.tsbuildinfo
+src/generated/
+.vercel

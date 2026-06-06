@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: chem2exam-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chem2exam
+      POSTGRES_USER: chem2exam
+      POSTGRES_PASSWORD: chem2exam
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - chem2exam-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  chem2exam-postgres-data:

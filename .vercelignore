@@ -1,0 +1,11 @@
+.env
+.env.*
+.next
+node_modules
+.npm-cache
+coverage
+dist
+outputs
+*.log
+tsconfig.tsbuildinfo
+docker-compose.yml

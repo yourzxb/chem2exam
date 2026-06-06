@@ -1,0 +1,756 @@
+# 当前开发状态
+
+更新时间：2026-06-06
+
+## 已完成
+
+- 完成 Vercel Production 部署：
+  - 生产访问地址为 `https://chem2exam.vercel.app`。
+  - Vercel 项目已绑定为 `keikei-s-projects/chem2exam`，生产部署状态为 Ready。
+  - 新增 `.vercelignore`，避免上传本机 `.env`、本地构建缓存、依赖目录和日志。
+  - Vercel Production 已添加加密 `AUTH_SECRET`，不记录明文。
+  - 无数据库演示模式新增内存演示账号初始化；正式配置 `DATABASE_URL` 后仍优先使用云数据库。
+  - 本机 `npm run typecheck`、`npm test`、`npm run build` 已通过；Vercel 云端构建已通过。
+  - Vercel 首页抓取返回 200，动态知识图谱接口 `/api/grades/初三/knowledge-graph` 返回 200。
+  - 当前 Vercel 版本是无数据库在线演示版；正式持久化使用前需要配置云 PostgreSQL 的 `DATABASE_URL` 并执行数据库初始化。
+  - 新增 `docs/test-reports/2026-06-06-vercel-deployment-report.md`，`docs/TEST_REPORT.md` 已指向 Vercel 部署报告。
+- 完成 2026-05-25 进度检查和整体收口：
+  - 本机 PostgreSQL 容器保留数据卷并重建，实际端口已从旧状态刷新为 `127.0.0.1:5432->5432/tcp`，符合数据库不向局域网开放的部署要求。
+  - 本机 `npm run verify:all` 已通过，覆盖 `db:generate`、`db:push`、`db:seed`、`typecheck`、`test`、`build`、页面冒烟、演示账号登录、学生学习流、审核流、老师流和管理流。
+  - 本次种子数据写入 2 所学校、5 个班级、14 个用户、25 个知识点和 31 道题，其中 25 道为已发布题、6 道为审核队列题。
+  - Ubuntu 测试机 `172.53.63.166:4174` 已通过 `verify:smoke` 和 `verify:demo-login`。
+  - 新增 `docs/test-reports/2026-05-25-overall-test-report.md`，`docs/TEST_REPORT.md` 已指向最新进度检查报告。
+- 完成专业 UI 工程师视角的四端前端精修：
+  - 首页改为更清晰的产品入口：保留学生端、老师端、审核端、管理端四个核心入口，加入诊断路径、奖励徽章、学习伙伴和关键能力摘要，减少无效营销堆叠。
+  - 学生端优化为更适合长题干阅读的布局，知识图谱从拥挤定位图改为可滚动的响应式节点网格，并保留沉浸做题、大题面、错后学习导航和正向激励反馈。
+  - 老师端改为更像教学工作台的层级：班级选择、关键指标、薄弱知识点、学生下钻、复盘任务和讲评素材在视觉上更容易扫描。
+  - 审核端强化“阅卷台”体验：队列筛选、风险标签、大题面审核和审核动作区更清晰，仍保持 AI 结果必须人工审核后发布。
+  - 管理端强化学校工作台、题库维护、AI 配置、筛选方案和批量审计区域的边界、按钮反馈和表单焦点态；API Key 仍只后端保存、前端不明文展示。
+  - 本轮 UI 精修后，本机 `npm run typecheck`、`npm test`、`npm run build` 已通过；Ubuntu 测试机 `172.53.63.166:4174` 已重新构建并通过 `verify:smoke`、`verify:demo-login`。
+- 完成第二层前端视觉收口：
+  - 全局统一控件高度、按钮 hover/active/disabled、输入框焦点态、表格粘性表头、空状态、提示反馈和低动效偏好支持。
+  - 学生端进一步优化知识图谱状态、选项选中反馈、提交区、沉浸做题宽度和移动端布局。
+  - 老师端进一步优化班级卡片、筛选区、班级健康度、薄弱知识点条形图、课堂讲评素材和学生表格扫描体验。
+  - 审核端进一步优化队列选中状态、大题面审核、来源标签、审核动作区和审核历史行。
+  - 管理端进一步优化学校工作台、导航、表单密度、题库筛选、批量确认、AI 状态卡和审计记录。
+  - 本轮收口后，本机和 Ubuntu 测试机 `172.53.63.166:4174` 的 `npm run typecheck`、`npm test`、`npm run build` 均已通过；测试机已重新启动并通过 `verify:smoke`、`verify:demo-login`。
+- 新增学校级组织与班级授权能力：
+  - Prisma 新增 `School`、`ClassGroup`、`TeacherClassAssignment`，并保留 `User.schoolId` / `User.classId` 作为学生班级归属。
+  - 新增 `organizationRepository`，支持学校、班级、任教关系和学生班级归属的 Prisma 优先、内存回退。
+  - 新增 `/api/admin/schools`、`/api/admin/classes`、`/api/admin/classes/:id/teachers`、`/api/admin/classes/:id/students`。
+  - 新增 `/api/admin/users`，管理员可按用户名、显示名或 ID 片段检索教师和学生，返回安全账号字段，不返回敏感凭证字段。
+  - 新增 `/api/admin/classes/:id/students/batch`，管理员可批量将学生加入班级；非学生账号和未找到标识会被跳过，成功入班逐条写入组织审计。
+  - `/api/admin/classes/:id/teachers` 支持 GET/PATCH，管理员可查看班级教师列表，并把班级内角色维护为 `teacher` 或 `head_teacher`。
+  - 新增 `/api/admin/schools/summary` 和 `/api/admin/schools/summary/export`，管理员可查看学校级班级数、学生数、教师数、作答量、正确率、补救任务和核心素养薄弱维度，并导出 CSV。
+  - 新增 `/api/teacher/classes`，老师端“我的班级”列表自动读取当前老师授权班级；普通老师不能看到未授权班级，管理员保留全局口径。
+  - `/admin` 新增“学校、班级与任课授权”面板，可创建学校和班级、检索教师和学生、绑定教师、单个或批量加入学生，并维护班级教师角色。
+  - `/admin` 新增“学校汇总”面板，可按学校查看汇总和导出 CSV。
+  - 学校组织维护写入 `AuditRecord`，动作包含 `admin_create_school`、`admin_create_class`、`admin_assign_teacher_class`、`admin_update_teacher_class_role`、`admin_assign_student_class`。
+  - 教师端所有显式班级报告、导出、学生下钻、复盘任务、提醒、反馈和课堂讲评素材接口均接入 `ensureTeacherClassAccess`。
+  - 教师访问具体 `classId` 时必须已绑定到该班级；未绑定教师访问该班级报告会返回 403。管理员仍可查看全局数据。
+  - 种子数据新增示范学校和示范班级。
+  - 种子数据新增固定演示账号：`demo_student_01`、`demo_student_02`、`demo_teacher`、`demo_admin`，并预置学生作答、错题复盘任务、同类题复测和成长奖励数据，便于四端直接体验。
+  - `/student`、`/teacher`、`/admin`、`/review` 登录区新增“演示账号”按钮，可一键填入对应演示账号。
+  - 首页新增学生端、老师端、管理端和审核端四个入口，并提示可使用演示账号。
+  - `scripts/verify-admin-flow.mjs` 已覆盖学校创建、班级创建、教师和学生账号检索、教师绑定、角色更新、单个学生入班、批量学生入班、学校汇总、已绑定教师可读班级报告、未绑定教师被拒绝和组织审计记录。
+  - `scripts/verify-teacher-flow.mjs` 已覆盖老师“我的班级”列表、管理员全局口径和未绑定教师列表隔离。
+  - 新增 `npm run verify:smoke`，检查首页和四端页面可访问，并确认演示账号入口和关键页面文案存在。
+  - 新增 `npm run verify:demo-login`，检查学生、老师、管理员和审核员演示账号可登录，并能访问各自权限范围内的基础接口。
+  - 新增 `npm run verify:all`，用于一键执行数据库准备、类型检查、业务测试、生产构建，并启动或复用本地服务跑页面冒烟、演示账号登录、学生端、审核端、老师端和管理端验证脚本。
+  - `docs/API_SPEC.md`、`docs/DATA_MODEL.md`、`docs/DATABASE_SCHEMA.md`、`docs/IMPLEMENTATION_PLAN.md`、`docs/TEST_STRATEGY.md` 已同步更新。
+  - 新增 `docs/test-reports/2026-05-18-overall-test-report.md`，`docs/TEST_REPORT.md` 已指向最新报告。
+  - 新增 `docs/test-reports/2026-05-19-overall-test-report.md`，`docs/TEST_REPORT.md` 已更新为最新跑通调试报告。
+  - 新增 `docs/OPENCLAW_DEPLOYMENT.md`，提供给 OpenClaw 的 Ubuntu 内网试点部署说明、systemd 服务、验证、备份和更新流程。
+  - `docker-compose.yml` 中 PostgreSQL 端口改为仅绑定 `127.0.0.1`，避免数据库端口暴露到校园网。
+  - 完成首轮前端美化：
+    - 首页改为四端试点入口面板，突出学生端、老师端、管理端和审核端。
+    - 学生端强化知识图谱图例、诊断流程引导、反馈区层级和移动端图谱扫描体验。
+    - 学习伙伴头像动画已升级：答对时跃升并出现奖励反馈，答错时轻微摇动并引导前置补救，文案保持正向。
+    - 老师端、管理端、审核端统一工作台头部、表单筛选区、卡片层级、列表 hover 和 focus 状态。
+    - 前端美化后已同步部署到 Ubuntu 局域网服务器 `172.53.62.221:4174`。
+  - 完成第二轮四端前端优化：
+    - 学生端改为“大题面优先”，新增沉浸做题全屏模式，长题干、选项、反馈和错后学习导航有更大展示面积。
+    - 学生端学习伙伴头像反馈继续保持正向表达；源码和测试均确认没有“乱做、低投入、不认真”等负面标签。
+    - 老师端强化“我的班级”、班级报告筛选、学生下钻、复盘任务和课堂讲评模板导出区，教师授权班级边界不变。
+    - 审核端改为左侧队列与右侧大题面审核结构，新增发布边界提示、低置信度核对建议和底部固定审核动作栏。
+    - 管理端将学校组织、班级授权、学生入班和学校汇总收纳为“学校工作台”，不新增独立 `/school` 路由。
+    - 首页文案同步为“化学个性化学习诊断系统”，管理端入口突出学校工作台、题库、知识图谱、AI 配置和审计。
+    - 新增 `docs/test-reports/2026-05-19-frontend-overall-test-report.md`，`docs/TEST_REPORT.md` 已指向前端四端优化专项报告。
+    - 浏览器截图留档在 `docs/test-reports/assets/`，覆盖学生端、学生沉浸模式、老师端、审核端和管理端。
+    - 第二轮前端优化已同步部署到 Ubuntu 局域网服务器 `172.53.62.221:4174`，远程 `npm run typecheck`、`npm test`、`npm run build`、`verify:smoke` 和 `verify:demo-login` 均通过。
+  - 完成视觉升级第二波 E2：演示数据与测试报告：
+    - `scripts/seed.mjs` 扩展为完整数据库种子，保留固定演示账号 `demo_student_01`、`demo_student_02`、`demo_teacher`、`demo_admin`。
+    - 种子数据新增 2 所学校、5 个班级、14 个演示用户、25 个知识点和 31 道种子题，覆盖初三、高一、高二、高三。
+    - 种子题中 25 道为 `published`，6 道为 `pending_review` / `needs_edit` 审核队列题；学生作答记录均关联 `published` 题。
+    - 种子数据新增多名学生的错题、复盘任务、复测迁移、老师反馈、成长奖励、连续学习记录和核心素养目标。
+    - 新增 `docs/test-reports/2026-05-19-visual-upgrade-test-report.md`，`docs/TEST_REPORT.md` 已指向 E2 专项报告。
+  - 完成视觉资产、组件库与四端动效升级：
+    - 新增 `src/components/visuals/`，包含 Chem Buddy 学习伙伴、分子路径、烧杯、知识路径、奖励徽章和奖励反馈动画。
+    - 新增 `src/components/ui/` 轻量组件库，覆盖按钮、卡片、指标卡、徽章、标签页、工具栏、表格、空状态、骨架屏、提示和进度环。
+    - 学生端接入学习伙伴、今日学习概览、阅读辅助、奖励反馈、知识路径可视化和徽章墙，仍保持激励性表达。
+    - 老师端新增班级健康度、复盘完成率、待提醒、老师备注和薄弱知识点可视化。
+    - 审核端新增当前题风险、AI 置信度、来源/风险/状态标签和队列统计，发布边界提示不变。
+    - 管理端新增组织就绪度、发布题/审核队列/AI 模型/审计记录总览和 AI 配置状态卡；API Key 仍只后端加密保存、前端只显示掩码。
+    - 浏览器截图已保存到 `docs/test-reports/assets/2026-05-19-visual-student.png`、`2026-05-19-visual-teacher.png`、`2026-05-19-visual-admin.png`、`2026-05-19-visual-review.png`。
+  - `npm run db:generate` 通过。
+  - `npm run db:push` 通过。
+  - `npm run db:seed` 通过，最近一次完成 E2 演示数据 upsert。
+  - `npm run typecheck` 通过，最近一次视觉升级后无类型错误。
+  - `npm test` 通过，22 条业务红线测试全通过。
+  - `npm run build` 通过，生产构建成功。
+  - `npm run verify:db-flow` 通过，最近一次写入 2 条答题记录、1 条补救路径、1 条奖励事件，排行榜返回 54 条成长记录。
+  - `npm run verify:review-flow` 通过，最近一次验证导入 4 道候选题、低置信度转需修改 1 条、审核记录检查 30 条。
+  - `npm run verify:teacher-flow` 通过，最近一次验证老师班级列表 1 条、未绑定教师列表 0 条、未授权访问 403、显式授权班级内 3 条作答记录、1 个复测迁移成功任务、1 条课堂讲评素材和 1 条未发布题脱敏素材。
+  - `npm run verify:admin-flow` 通过，最近一次验证教师角色更新为 `head_teacher`、账号目录检索、批量入班 1 名学生、学校汇总、组织授权、题库维护、批量预览确认和批次审计，批量操作 ID `batch_f2ce9ba7a1a047ecacff1d4f`。
+  - `npm run verify:all` 通过，最近一次已一键完成数据库准备、类型检查、业务测试、生产构建、服务启动、页面冒烟、演示登录和四条端到端验证流程。
+  - `npm run verify:smoke` 通过，首页和四端页面可访问，演示账号入口和关键文案存在。
+  - `npm run verify:demo-login` 通过，四端演示账号登录和基础权限验证通过。
+  - 前端美化后，`npm run typecheck`、`npm test`、`npm run build` 均通过；Ubuntu 服务器上也已重新构建并通过 `verify:smoke` 和 `verify:demo-login`。
+  - 浏览器检查首页、`/admin`、`/teacher`、`/student` 和 `/review` 通过；管理端账号目录和批量入班入口可见，无控制台错误。
+  - 已导入本机初中化学知识图谱 `/Users/keikei/Documents/Codex/2026-05-19/where-codex/junior-chemistry-kg/junior_chemistry_knowledge_graph.json`：
+    - 新增 `scripts/import-junior-chemistry-kg.mjs` 和 `npm run db:import-junior-kg`，后续可重复导入或更新。
+    - 知识图谱版本 `kg_junior_chemistry_2022_prereq_v1`，年级为 `初三` / `junior_three`，状态为 `published`。
+    - 已写入 99 个知识点、169 条前置依赖关系，覆盖 13 个知识领域。
+    - 原始关系中的 `supports`、`evidence` 已按较低权重转换为系统可追溯使用的 `prerequisite` 关系，保证答错后能沿知识图谱向上补前置知识。
+    - 本机数据库和 Ubuntu 测试机 `172.53.63.166:4174` 数据库均已导入；远程 `/api/grades/初三/knowledge-graph` 已返回 99 个节点和 169 条关系。
+  - 已导入本机高中化学知识图谱 `/Users/keikei/Documents/Codex/2026-05-19/where-codex/high-school-chemistry-kg`：
+    - 新增 `scripts/import-high-school-chemistry-kg.mjs` 和 `npm run db:import-high-school-kg`，一次导入高一、高二、高三三份图谱。
+    - 高一版本 `kg_senior_one_chemistry_2022_prereq_v1`，已写入 36 个知识点、39 条前置依赖关系。
+    - 高二版本 `kg_senior_two_chemistry_2022_prereq_v1`，已写入 30 个知识点、34 条前置依赖关系。
+    - 高三版本 `kg_senior_three_chemistry_2022_prereq_v1`，已写入 30 个知识点、46 条前置依赖关系。
+    - 原始关系中的 `supports`、`diagnose` 已按较低权重转换为系统可追溯使用的 `prerequisite` 关系，服务答错后的前置补救路径。
+    - 本机数据库和 Ubuntu 测试机 `172.53.63.166:4174` 数据库均已导入；远程 `/api/grades/高一/knowledge-graph`、`/api/grades/高二/knowledge-graph`、`/api/grades/高三/knowledge-graph` 均已返回对应图谱。
+  - 修复“导入图谱/真题在前端不明显”的可见性问题：
+    - 学生端知识图谱改为读取数据库接口 `/api/grades/:grade/knowledge-graph`，切换初三、高一、高二、高三会显示最新已发布图谱版本和节点/关系数量。
+    - 学生端诊断题改为通过 `/api/student/questions/next` 读取已发布题；若某个新图谱节点暂未绑定已发布题，会提示“真题需要在审核端一审发布后才会出现在学生端”。
+    - `/api/student/questions/next` 继续只返回 `published` 题，同时补充主知识点、前置知识、核心素养和能力目标，方便学生端错后补救。
+    - 审核台来源筛选新增“整卷导入”，默认显示全部待一审来源；管理端整卷导入完成后提供“去审核端查看”入口。
+    - 整卷拆题的知识点初步挂接改为优先读取数据库最新已发布知识图谱，导入高中真题时可挂接到高一/高二/高三新图谱节点；AI/规则拆题结果仍必须进入人工一审后才能发布。
+- 将原静态原型移动到 `prototype/` 保存。
+- 搭建正式 Next.js + TypeScript 项目骨架。
+- 创建学生端、老师端、管理端、审核端基础页面。
+- 创建学生端 MVP 页面：
+  - 年级切换。
+  - 知识图谱展示。
+  - 真题式诊断题。
+  - 答错后错后学习导航。
+  - 前置知识补救。
+  - 回到原知识点复测。
+  - 成长奖励展示。
+  - 本周成长型排行榜。
+  - 简要学习报告。
+- 创建核心领域模块：
+  - 时间评估。
+  - 行为信号。
+  - 错后补救推荐。
+  - 成长型奖励。
+  - 排行榜示例数据。
+- 创建基础 API 路由：
+  - 获取知识图谱。
+  - 获取学生下一题。
+  - 提交答案。
+  - 获取排行榜。
+- 添加业务红线测试：
+  - 学生端避免负面标签。
+  - 补救奖励高于普通答对。
+  - 学生题目接口只返回已发布题目。
+  - AI 和审核约束保留在 Codex 规则中。
+- 接入 Prisma 数据层骨架：
+  - 新增 `prisma/schema.prisma`，覆盖用户、知识图谱、题目、答题记录、补救路径、奖励、排行榜、AI 配置、AI 任务、审核记录。
+  - 新增 `.env.example`，为 PostgreSQL 和认证密钥预留配置。
+  - 生成 Prisma Client 到 `src/generated/prisma`。
+- 新增仓库层：
+  - `learningRepository` 统一读取知识图谱和已发布题目。
+  - 学生 API 已从直接读取种子数组改为通过仓库层读取。
+- 新增临时认证 API：
+  - `/api/auth/register`
+  - `/api/auth/login`
+  - 密码使用 PBKDF2 哈希，不明文存储。
+- 认证仓库已升级为 Prisma 优先、内存回退：
+  - 配置 `DATABASE_URL` 时通过 Prisma `User` 表注册和登录。
+  - 未配置数据库时自动使用内存仓库，便于本地开发和构建。
+  - 公开返回的用户信息不包含 `passwordHash`。
+- 新增本地数据库准备：
+  - `docker-compose.yml` 提供 PostgreSQL 16 服务。
+  - `scripts/seed.mjs` 可导入示例知识图谱、题目、挂接和核心素养标签。
+  - 种子数据包含已发布题目和 1 条待审核 AI 候选题。
+  - 新增 `npm run verify:db-flow`，用于验证注册、作答、补救、奖励是否写入 PostgreSQL。
+  - `docs/LOCAL_DATABASE.md` 记录本地启动、`db:push`、`db:seed` 流程。
+- 新增学习事件仓库：
+  - `learningEventRepository` 支持保存答题记录、补救路径、奖励事件。
+  - 配置 `DATABASE_URL` 时写入 Prisma 表。
+  - 未配置数据库时写入内存仓库，保证本地开发可继续运行。
+  - `/api/student/answers/submit` 已接入学习事件仓库。
+- 新增真实学习统计：
+  - 新增 `learningStatsRepository`，从 PostgreSQL 聚合奖励、答题、补救数据。
+  - `/api/student/leaderboard` 已从演示数据改为读取真实 XP 排行。
+  - 新增 `/api/student/reports/latest`，按当前登录学生生成个人学习报告。
+  - 学生端底部排行榜和学习报告已接入真实接口。
+- 新增登录会话能力：
+  - 注册和登录成功后写入签名的 httpOnly Cookie。
+  - 新增 `/api/auth/me` 获取当前用户。
+  - 新增 `/api/auth/logout` 退出登录。
+  - 答题提交时优先使用当前登录学生身份，避免前端传入错误学生 ID。
+- 新增一审审核 MVP：
+  - 新增待审核题列表接口 `/api/review/questions`。
+  - 新增一审通过并发布接口 `/api/review/questions/:id/approve`。
+  - 新增修改后通过接口 `/api/review/questions/:id/edit-and-approve`。
+  - 新增批量通过接口 `/api/review/questions/batch-approve`。
+  - 新增驳回接口 `/api/review/questions/:id/reject`。
+  - 审核接口在数据库模式下要求老师或管理员登录。
+  - 新增审核仓库，数据库可用时写入 `AuditRecord`。
+  - 新增 `/review` 审核台页面，可查看 AI 挂接结果、答案解析、核心素养标签，支持一审发布、修改后发布、批量通过。
+  - 学生端种子题目过滤为只展示 `published`。
+- 新增老师端班级报告 MVP：
+  - 新增 `teacherReportRepository`，从 PostgreSQL 聚合班级学生、答题、补救、奖励数据。
+  - 新增 `/api/teacher/classes/overview`，老师或管理员登录后可读取班级总览。
+  - 新增 `/teacher` 班级诊断看板，展示学生数、作答数、正确率、补救路径、平均用时。
+  - 老师端可查看班级薄弱知识点、学生个人摘要和讲评建议。
+- 完善老师端班级讲评建议：
+  - 班级报告新增 `weakQuestionTypes`，按题型统计作答数、错题数、错误率和审题建议。
+  - 班级报告新增 `weakCoreLiteracy`，按化学核心素养统计作答数、错题数、错误率和能力落点建议。
+  - `/teacher` 新增“题型错题讲评”和“核心素养讲评”面板。
+  - 新增 `npm run verify:teacher-flow`，验证老师端班级报告数据库流程。
+- 新增管理端题库和知识图谱维护 MVP：
+  - 新增 `adminContentRepository`，从 PostgreSQL 管理题目列表、知识点、知识关系。
+  - 新增 `/api/admin/questions`，管理员可查看题库审核状态、主知识点和核心素养标签。
+  - 新增 `/api/admin/knowledge-points`，管理员可查看和新增知识点。
+  - 新增 `/api/admin/knowledge-relations`，管理员可查看和新增知识图谱关系。
+  - 新增 `/admin` 管理工作台，支持管理员注册/登录、题库查看、知识点新增、前置关系新增。
+- 新增 AI 模型配置中心和后台任务队列 MVP：
+  - 新增 `crypto` 安全模块，使用 AES-GCM 加密保存 API Key。
+  - 新增 `aiAdminRepository`，支持模型配置和 AI 任务的 Prisma 优先、内存回退。
+  - 新增 `/api/admin/ai/models`，管理员可添加和查看 DeepSeek、智谱 GLM 等模型配置。
+  - 新增 `/api/admin/ai/tasks`，管理员可创建和查看后台 AI 任务。
+  - `/admin` 管理工作台新增 AI 配置中心，页面只展示 API Key 掩码。
+  - AI 任务创建时保留“AI 结果进入人工审核后发布”的流程约束。
+- 新增整卷拆题导入 MVP：
+  - 新增 `examPaperRepository`，支持试卷文本、答案解析文本拆解为题目候选。
+  - 新增 `/api/admin/exam-papers/import`，管理员可导入整套试卷并生成待审核题。
+  - 自动初步挂接知识点、前置知识和核心素养标签。
+  - 新生成题目一律为 `pending_review`，进入 `/review` 一审队列。
+  - `/admin` 管理工作台新增“整卷拆题”区块。
+- 新增 AI 任务 worker MVP：
+  - 新增 `structured-output` 校验模块，按任务类型检查结构化输出和置信度范围。
+  - 新增 `task-worker`，支持任务状态从 `running` 流转到 `needs_review` 或 `failed`。
+  - 新增 `/api/admin/ai/tasks/:id/run`，管理员可触发单个 AI 任务执行。
+  - 默认 dry-run 模式不调用外部模型；后端设置 `AI_WORKER_MODE=live` 后可调用模型 API。
+  - worker 读取后端加密 API Key，不向前端返回明文。
+  - `/admin` 任务队列新增“执行”按钮。
+- 完善 AI worker 路由和日志：
+  - 创建 AI 任务时可手动选择默认模型和备用模型。
+  - 未指定默认模型时，后端按任务类型自动选择已启用模型。
+  - 执行任务时支持重试次数，单模型最多 5 次。
+  - 默认模型失败后可切换备用模型。
+  - `AiTask.tokenUsage` 记录 `attemptCount`、实际使用模型和每次尝试摘要。
+  - 管理端任务队列显示尝试次数、使用模型、失败错误，并支持失败任务重跑。
+- 完善整卷拆题和审核筛选：
+  - 整卷拆题支持初步识别单选题、多选题、填空题、简答题、计算题、实验题和推断题。
+  - 支持识别大题小问，并生成结构核对提示。
+  - 低置信度知识点挂接会标记为 `low_confidence`。
+  - `sourceMeta` 保存题型风险、结构警告、小问数量和小问内容。
+  - 审核接口 `/api/review/questions` 支持按来源、置信度、题型、知识点筛选。
+  - `/review` 审核台新增来源、置信度、题型、知识点筛选控件，并显示风险提示。
+- 完善审核台增强：
+  - 新增 `/api/review/audit-records`，老师或管理员可查看最近审核历史。
+  - 新增 `/api/review/questions/batch-needs-edit`，可将低置信度题批量转为 `needs_edit`。
+  - `/review` 新增“低置信度转需修改”按钮。
+  - `/review` 新增审核历史列表和刷新入口。
+- 新增审核台 AI 重析入口：
+  - 新增 `/api/review/questions/:id/retry-ai`，老师或管理员可针对待审题创建 AI 重新分析任务。
+  - 重新分析默认进入 `knowledge_linking` 任务，结果仍必须进入人工一审。
+  - 审核仓库新增 `request_ai_retry` 审核记录，保留发起人、题目、任务和备注。
+  - `/review` 详情页新增“重新 AI 分析”按钮，审核历史显示发起审核员。
+- 新增审核记录详情：
+  - `/api/review/audit-records` 返回 `changeSummary`，用于展示审核状态、题干、答案、解析、主知识点和核心素养的关键变化。
+  - 如果审核记录关联 AI 重析任务，则返回可公开的 `aiTask` 状态、任务类型和错误信息。
+  - `/review` 审核历史支持展开查看详情，显示变更摘要和关联 AI 任务。
+- 新增审核数据库验证脚本：
+  - 新增 `npm run verify:review-flow`，用于验证管理员模型配置、整卷拆题、审核筛选、低置信度批处理、AI 重析、审核历史详情和一审发布。
+  - `docs/LOCAL_DATABASE.md` 和 `docs/TEST_STRATEGY.md` 已补充验证脚本说明。
+- 新增审核历史筛选联动：
+  - `/api/review/questions` 支持 `questionId` 精确定位筛选。
+  - `/api/review/audit-records` 返回 `filterHints`，包含可公开的题目 ID、审核状态、知识点和题型。
+  - `/review` 审核队列新增状态筛选和题目 ID 筛选。
+  - 审核历史详情新增“定位该题”“同知识点”“同题型”快捷筛选按钮。
+- 完善管理端题库维护编辑能力：
+  - `/api/admin/questions/:id` 支持管理员维护题干、答案、解析、审核状态、题型、人工难度、中位用时、主知识点挂接和核心素养标签。
+  - 管理员修改主知识点时，挂接来源记录为 `human`，人工确认结果优先于 AI 结果。
+  - 管理员修改核心素养标签时，标签来源记录为 `human`，人工确认结果优先于 AI 结果。
+  - 每次题目维护都会写入 `admin_update_question` 审核记录。
+  - 新增 `/api/admin/questions/batch-update`，支持管理员批量维护题目审核状态和人工难度。
+  - `/api/admin/questions` 支持按审核状态、年级、题型和主知识点筛选题库。
+  - `/api/admin/questions/batch-update` 支持批量挂接主知识点和批量维护核心素养标签，来源记录为 `human`。
+  - 批量维护会逐题写入 `admin_batch_update_question` 审核记录。
+  - `/admin` 题库列表新增“题目维护”表单，可编辑题目元数据、答案解析、审核状态、知识点挂接和核心素养标签。
+  - `/admin` 题库列表新增“筛选题库”和“批量维护”表单，可筛选题型、年级、知识点，并选择多道题统一修改审核状态、难度、主知识点和核心素养标签。
+  - 管理端题库筛选条件会保存到本地，下次打开仍保留筛选口径。
+  - 学生端仍只读取 `published` 题目，被改为 `needs_edit` 的题目不会进入练习。
+- 完善管理端题库维护体验：
+  - `/admin` 支持将当前题库筛选口径命名保存为筛选方案。
+  - 管理端可保存多个常用筛选方案，并一键恢复状态、年级、题型和主知识点筛选条件。
+  - 批量维护前新增“批量操作预览”，展示选中题目和即将写入的审核状态、难度、主知识点与核心素养变更。
+  - 筛选方案仍仅保存在本地浏览器，不涉及 API Key、学生作答记录或未审核题目发布边界。
+- 继续完善管理端题库维护体验：
+  - `/admin` 支持将本地命名筛选方案导出为 JSON，并可从 JSON 导入到当前浏览器。
+  - 筛选方案导入/导出不经过后端接口，不保存 API Key、学生作答记录或题目发布边界信息。
+  - `/admin` 批量维护提交前必须勾选二次确认；未确认时不会调用 `/api/admin/questions/batch-update`。
+  - 批量维护仍保留预览，便于管理员核对目标审核状态、难度、主知识点和核心素养标签。
+- 完善老师端班级报告筛选：
+  - `/api/teacher/classes/overview` 支持 `grade`、`startDate`、`endDate` 查询参数。
+  - 老师端班级报告可按初三、高一、高二、高三筛选题目年级。
+  - 老师端班级报告可按日期范围筛选作答、补救和奖励统计。
+  - 报告响应会返回 `filters`，便于页面确认当前统计口径。
+  - `/teacher` 新增年级、开始日期、结束日期筛选控件。
+- 完善老师端报告导出和知识点下钻：
+  - 新增 `/api/teacher/classes/overview/export`，老师或管理员可导出当前筛选口径下的 CSV 报告。
+  - CSV 包含班级概览、薄弱知识点、题型讲评、核心素养讲评和学生摘要。
+  - 新增 `/api/teacher/classes/knowledge-points/:id/students`，老师或管理员可按知识点查看相关学生名单。
+  - 知识点下钻返回学生作答数、需巩固次数、正确率、补救路径数和讲评建议。
+  - `/teacher` 新增“导出报告”和“查看学生”入口。
+- 完善老师端学生个人下钻和错题清单：
+  - 新增 `/api/teacher/classes/students/:id/detail`，老师或管理员可按学生查看个人学习详情。
+  - 学生个人下钻返回作答数、需巩固次数、正确率、补救路径数、个人薄弱知识点和错题清单。
+  - 错题清单包含题干、学生答案、参考答案、解析、知识点、题型、用时和下一步复盘建议。
+  - `/teacher` 学生摘要新增“查看错题”入口。
+- 完善老师端错题清单导出和复盘任务分配：
+  - 新增 `/api/teacher/classes/students/:id/wrong-questions/export`，老师或管理员可导出单个学生错题清单 CSV。
+  - 新增 `/api/teacher/classes/students/:id/review-tasks`，老师或管理员可把学生错题分配为个人复盘任务。
+  - 复盘任务当前记录到 `RemediationPath`，状态为 `assigned_review:<teacherId>`，便于后续学生端提醒和完成跟踪。
+  - `/teacher` 学生个人详情新增“导出错题”和“分配复盘”入口。
+- 完善老师端和学生端复盘任务联动：
+  - 新增 `/api/student/review-tasks`，学生可读取老师分配给自己的错题复盘任务。
+  - 新增 `/api/student/review-tasks/:id/complete`，学生可标记完成自己的复盘任务。
+  - 学生完成复盘后，`RemediationPath.status` 从 `assigned_review:<teacherId>` 更新为 `completed_review:<teacherId>`，并写入 `completedAt`。
+  - 学生完成复盘会写入 `review_completed` 奖励事件，奖励重点仍放在错题复盘而不是刷题数量。
+  - `/student` 新增“老师任务”复盘列表，使用激励性提示，不显示负面标签。
+  - `/teacher` 学生个人详情新增复盘任务反馈，可查看待完成和已完成数量及完成时间。
+- 继续完善复盘任务：
+  - `RemediationPath` 新增 `studentReviewNote`，用于保存学生完成错题复盘时填写的复盘笔记。
+  - `RemediationPath` 新增 `reviewReminderCount` 和 `lastReviewReminderAt`，用于记录老师温和提醒复盘的次数和最近提醒时间。
+  - `/api/student/review-tasks/:id/complete` 支持接收 `reviewNote`，完成复盘时一并保存。
+  - `/student` 复盘任务新增复盘笔记输入框和“同类题复测”入口，仍只进入已发布题目范围。
+  - `/student` 复盘笔记新增方法性质量提示，引导学生写清错因、证据、条件和下次步骤。
+  - `/student` 从复盘任务进入同类题复测后，提交作答会携带 `reviewTaskId`，用于回写复测结果。
+  - `/api/student/answers/submit` 在同类题复测场景返回 `retest.nextAction`，做对后提示进入变式题挑战，还需巩固时提示回到前置知识或基础同类题。
+  - `/api/student/answers/submit` 在学生完成复测后的下一步行动时返回 `retest.nextActionReward`，变式题挑战写入 `breakthrough` 奖励，前置知识巩固写入 `remediation_completed` 奖励，并防止同类奖励重复刷取。
+  - `/api/student/reports/latest` 的复盘任务返回 `nextAction`，学生可在老师任务列表中看到复测后的下一步行动。
+  - `/api/student/reports/latest` 新增 `todayTasks`、`completedTasks` 和 `growthTimeline`，将复盘任务、下一步行动和奖励事件整理为今日任务、已完成任务和累计成长轨迹。
+  - `/api/student/reports/latest` 新增 `weeklyGrowthSummary` 和 `coreLiteracyGrowth`，按最近 7 天奖励事件和题目核心素养标签生成成长摘要。
+  - `/api/student/reports/latest` 新增 `weeklyReviewCards`，按复盘推进、前置补清和从难到会生成按周成长回顾卡片。
+  - 新增 `StudentLearningGoal`，用于保存学生选择的核心素养目标。
+  - 新增 `/api/student/core-literacy-goals`，学生可选择一个本周核心素养目标，目标只保存到当前登录学生账号。
+  - `/api/student/reports/latest` 新增 `coreLiteracyGoals` 和 `milestoneBadges`，展示核心素养目标选择状态和阶段性鼓励徽章。
+  - `/student` 复盘任务卡片展示下一步行动的待完成/已完成状态，并支持从已完成复盘任务继续进入变式题挑战或前置知识巩固。
+  - `/student` 新增“今日任务”“已完成任务”和“成长轨迹”展示区，帮助学生看到下一步行动和累计成长来源。
+  - `/student` 新增“本周成长”和“核心素养成长”展示区，帮助学生看到最近一周成长来源和化学能力维度建议。
+  - `/student` 新增周成长回顾卡、核心素养目标选择按钮和阶段徽章展示，奖励仍围绕复盘、补清和突破行为。
+  - `/api/teacher/classes/overview` 支持 `reviewStatus=assigned|completed|none`，老师可按复盘状态筛选学生。
+  - 新增 `/api/teacher/classes/students/:id/review-tasks/remind`，老师可对待完成复盘任务生成温和提醒记录。
+  - `/teacher` 学生列表显示待复盘/已复盘数量，学生详情显示学生复盘笔记。
+  - `/teacher` 学生详情新增“提醒复盘”入口，并显示提醒次数和最近提醒时间。
+  - `RemediationPath` 新增 `retestQuestionId`、`retestAnswerRecordId`、`retestIsCorrect` 和 `retestCompletedAt`，老师端可查看复盘后同类题复测结果。
+  - 新增 `/api/teacher/classes/review-tasks/remind`，老师可批量提醒多名有待复盘任务的学生。
+  - `/api/teacher/classes/overview` 支持 `reminderStatus=reminded|not_reminded|cooldown`，老师可按提醒记录筛选学生。
+  - 复盘提醒默认使用 24 小时冷却时间，冷却期内重复提醒会被跳过并返回跳过数量。
+  - `/teacher` 学生列表支持勾选多名学生后批量提醒，并显示可提醒任务数、已提醒次数和最近提醒状态。
+  - `/api/teacher/classes/overview` 新增 `retestSummary`，按同类题复测结果汇总“已迁移成功”“继续巩固中”和“待复测”。
+  - `/teacher` 新增“复测迁移汇总”面板，帮助老师判断复盘是否真正转化为迁移能力。
+  - `/teacher` 学生摘要新增迁移成功数、继续巩固数、待复测数和个人复测建议。
+  - `/api/teacher/classes/overview` 支持 `retestStatus=success|needs_consolidation|pending|none`，老师可按复测迁移结果筛选学生。
+  - `/teacher` 筛选区新增“复测结果”，可快速定位已迁移成功、继续巩固中、待复测和暂无复测任务的学生。
+  - `/api/teacher/classes/overview` 新增 `reviewTrend`，统计最近 7 天分配复盘、完成复盘、提醒复盘和完成复测数量。
+  - `/api/teacher/classes/overview` 新增 `reviewGroups`，按继续巩固中、待复测、可挑战变式和需要分配复盘生成分层建议。
+  - `/api/teacher/classes/overview` 支持 `reviewGroup=needs_consolidation|pending_retest|ready_for_challenge|needs_assignment`，老师可按分层复盘建议一键筛选学生。
+  - 新增 `/api/teacher/classes/review-followups/export`，老师可导出当前筛选口径下的复盘跟进名单 CSV。
+  - `/teacher` 分层复盘建议新增“筛选此组”和“导出复盘跟进”入口。
+  - 新增 `/api/teacher/classes/review-tasks/next-round`，老师可基于复盘跟进名单批量分配下一轮变式挑战或前置知识巩固任务。
+  - `/teacher` 学生列表支持勾选学生后批量分配变式题挑战或前置知识巩固任务。
+  - `/api/teacher/classes/overview` 新增 `nextRoundSummary`，按变式题挑战和前置知识巩固统计下一轮任务待完成、已完成和完成率。
+  - `/api/teacher/classes/overview` 的 `nextRoundSummary.taskBreakdown` 返回变式题挑战、前置知识巩固的待完成学生名单和已完成学生名单。
+  - `/api/teacher/classes/overview` 支持 `reviewTaskType=review|variant_challenge|prerequisite_consolidation`，老师可按任务类型筛选跟进学生。
+  - `/teacher` 新增“下一轮任务”汇总面板和“任务类型”筛选控件，学生列表展示变式任务和前置巩固任务数量。
+  - `/teacher` 的“下一轮任务”面板可查看每类任务的待完成学生、已完成学生，并可点击进入学生个人下钻。
+  - 班级报告 CSV 和复盘跟进 CSV 新增“下一轮任务类型明细”，导出变式题挑战、前置知识巩固的待完成/已完成学生与任务数。
+  - `RemediationPath` 新增老师端评价备注字段：`teacherFeedbackNote`、`teacherFeedbackAt`、`teacherFeedbackBy`。
+  - 新增 `/api/teacher/classes/students/:id/review-tasks/:taskId/feedback`，老师或管理员可为已完成复盘或二次任务保存评价备注。
+  - `/api/teacher/classes/overview` 的 `nextRoundSummary.taskBreakdown` 新增老师备注数、二次任务完成反馈和课堂讲评建议。
+  - `/api/teacher/classes/students/:id/detail` 的复盘任务列表新增完成反馈、课堂讲评建议和老师评价备注。
+  - `/teacher` 学生个人下钻可为已完成任务保存老师备注，并显示二次任务完成反馈和课堂讲评建议。
+  - 班级报告 CSV 和复盘跟进 CSV 的下一轮任务类型明细新增完成反馈、课堂讲评建议和老师备注数。
+  - `/teacher` 新增“复盘趋势”和“分层复盘建议”面板，帮助老师决定先提醒、先复测还是先做分层讲评。
+
+## 已验证
+
+命令验证：
+
+- `npm run typecheck` 通过。
+- `npm test` 通过。
+- `npm run build` 通过。
+- `docker compose up -d postgres` 通过，PostgreSQL 16 容器已启动。
+- `npm run db:push` 通过，数据库表结构已同步。
+- `npm run db:seed` 通过，示例知识图谱、题目、挂接和审核候选题已导入。
+- `npm run db:generate` 通过。
+
+最近一次继续开发验证：
+
+- `npm run db:generate` 通过。
+- `npm run typecheck` 通过。
+- `npm test` 通过。
+- `npm run build` 通过。
+- 业务红线测试从 4 条扩展到 6 条，新增密码哈希和 Prisma 审核边界检查。
+- 业务红线测试已扩展到 18 条，新增答题提交事件持久化入口检查、登录会话 Cookie 检查、一审发布边界检查、审核权限和修改/批量通过检查、数据库流程验证脚本检查、真实学习统计检查、老师端班级报告检查、管理端内容维护检查、AI 配置密钥安全检查、整卷拆题审核边界检查和 AI worker 发布边界检查。
+- 新增学生端登录/注册条：
+  - 未登录时可体验诊断。
+  - 注册或登录后进入个人学习档案。
+  - 提交答案走后端接口，后台根据登录 Cookie 记录学生 ID。
+- 新增头像反馈动效：
+  - 答对时头像积极跳动。
+  - 答错时头像提示性晃动。
+- 新增审核台验证：
+  - `/review` 可显示待审核 AI 候选题。
+  - 一审通过后待审核队列清空。
+  - 一审通过后，学生下一题接口可读取新发布题目。
+  - 未登录访问审核队列会返回 403。
+  - 老师账号可进入审核队列。
+  - 修改后通过会发布修订后的题干。
+  - 批量通过接口可清空待审核队列。
+- 新增数据库模式验证：
+  - `.env` 已从 `.env.example` 创建。
+  - PostgreSQL 容器 `chem2exam-postgres` 正常运行。
+  - `/api/grades/初三/knowledge-graph` 可从数据库读取知识图谱。
+  - `/api/student/questions/next` 可从数据库读取已发布题目。
+  - `/api/review/questions?status=pending_review` 可从数据库读取待审核 AI 候选题。
+  - `npm run verify:db-flow` 通过，已验证注册、答题、补救、奖励完整写入 PostgreSQL。
+  - 最近一次数据库流程验证写入：2 条答题记录、1 条补救路径、1 条奖励事件。
+  - `npm run verify:db-flow` 已扩展验证 `/api/student/reports/latest` 和 `/api/student/leaderboard`。
+  - 最近一次数据库流程验证读到：个人报告 2 条作答记录，排行榜 2 条以上成长记录。
+  - 浏览器验证学生端底部可显示真实排行榜和个人统计。
+- 新增老师端验证：
+  - 未登录访问 `/api/teacher/classes/overview` 返回 403。
+  - 老师账号可读取班级报告。
+  - 班级报告可显示学生数、作答数、正确率、补救路径、薄弱知识点和讲评建议。
+- 新增老师端讲评建议验证：
+  - `npm run verify:teacher-flow` 通过，最近一次读到 9 条作答记录、1 类薄弱题型、2 类核心素养讲评和 5 条讲评建议。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+  - `npm run build` 通过。
+- 新增管理端验证：
+  - 未登录访问 `/api/admin/questions` 返回 403。
+  - 管理员账号可读取题库列表。
+  - 管理员可新增知识点。
+  - 管理员可新增知识图谱前置关系。
+- 新增 AI 配置中心验证：
+  - 管理员可在 `/admin` 添加 DeepSeek 模型配置。
+  - 页面只显示 API Key 掩码，例如 `****3456`，不显示明文。
+  - 管理员可创建 AI 后台任务。
+  - 任务创建后状态为 `pending`，页面提示后续结果进入人工审核。
+- 新增整卷拆题验证：
+  - 管理员可在 `/admin` 粘贴试卷正文和答案解析。
+  - 系统可生成 1 道待审核题。
+  - 题库列表显示该题为 `pending_review`。
+  - `/review` 审核队列可看到该导入题及 AI 初步挂接结果。
+- 新增 AI worker 验证：
+  - 管理员端任务队列可显示“执行”按钮。
+  - 点击执行后任务进入 `needs_review`。
+  - 页面提示“AI 任务已完成，结果进入人工审核状态”。
+- 新增 AI worker 路由和日志验证：
+  - 任务创建支持自动选择默认模型。
+  - 任务创建支持备用模型。
+  - 任务执行接口支持 `maxAttempts`。
+  - 业务红线测试覆盖默认路由、备用模型、重试次数、尝试日志和失败重跑入口。
+- 新增整卷拆题和审核筛选验证：
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，18 条业务红线测试全通过。
+  - `npm run build` 通过。
+  - 浏览器验证 `/review` 可显示来源、置信度、题型、知识点筛选控件。
+  - 当前 PostgreSQL 未运行，浏览器仅验证审核台 UI；尝试启动 Docker PostgreSQL 时命令长时间无响应，已停止该命令，数据库筛选接口待 Docker/PostgreSQL 恢复后继续实测。
+- 新增审核台增强验证：
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，18 条业务红线测试全通过。
+  - `npm run build` 通过。
+  - 浏览器验证 `/review` 可显示“低置信度转需修改”和“审核历史”。
+  - 当前 PostgreSQL 未运行，审核历史和低置信度批处理的数据流待数据库恢复后继续实测。
+- 新增审核台 AI 重析入口验证：
+  - `docker compose ps` 因 Docker daemon 未运行失败，当前无法恢复 PostgreSQL 端到端验证。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，18 条业务红线测试全通过。
+  - `npm run build` 通过。
+  - Next.js 构建已识别 `/api/review/questions/[id]/retry-ai` 路由。
+- 新增审核记录详情验证：
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，18 条业务红线测试全通过。
+  - `npm run build` 通过。
+  - 当前 Docker daemon 未运行，审核详情的真实数据库记录展示待 PostgreSQL 恢复后继续浏览器实测。
+- 新增数据库恢复后的审核流程验证：
+  - `docker compose ps` 已确认 `chem2exam-postgres` 运行。
+  - `npm run db:push` 通过，数据库结构已同步。
+  - `npm run db:seed` 通过，种子数据已导入。
+  - `npm run dev -- -p 4174` 启动本地服务用于验证，验证后已停止。
+  - `npm run verify:db-flow` 通过，最近一次写入：2 条答题记录、1 条补救路径、1 条奖励事件，个人报告 2 条作答记录，排行榜 4 条记录。
+  - `npm run verify:review-flow` 通过，最近一次导入 4 道整卷拆题候选，1 道低置信度题转需修改，创建 1 条 AI 重析任务，并完成 1 道题一审发布。
+  - `npm test` 通过，业务红线测试已扩展到 19 条，新增审核数据库验证脚本检查。
+  - `npm run typecheck` 通过。
+  - `npm run build` 通过。
+- 新增审核历史筛选联动验证：
+  - `npm run verify:review-flow` 已扩展检查 `filterHints` 和 `questionId` 精确定位筛选，通过。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+  - `npm run build` 通过。
+- 新增管理端题库维护验证：
+  - `npm run verify:admin-flow` 通过，已验证管理员维护题目元数据、答案解析、核心素养标签、审核状态、题型、人工难度、中位用时和主知识点挂接。
+  - 验证脚本将 `q_ai_pending_1` 更新为 `needs_edit`、`short_answer`，并挂接到 `indicator` 主知识点。
+  - 验证脚本将核心素养标签更新为 `evidence_model` 和 `inquiry_innovation`，并验证来源为 `human`。
+  - 已验证系统写入 `admin_update_question` 审核记录。
+  - 已验证题库可按题型、年级和主知识点筛选。
+  - 已验证批量维护 2 道题并写入 `admin_batch_update_question` 审核记录。
+  - 已验证批量主知识点挂接为 `acid_base`，且挂接来源为 `human`。
+  - 已验证批量核心素养标签为 `macro_micro` 和 `attitude_responsibility`，且标签来源为 `human`。
+  - 已验证 `needs_edit` 题目不会出现在学生练习接口中。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+  - `npm run build` 通过，Next.js 已识别 `/api/admin/questions/[id]` 路由。
+- 新增老师端筛选验证：
+  - `npm run verify:teacher-flow` 通过，已验证老师端报告可按 `grade=高一` 返回高一题目表现。
+  - `npm run verify:teacher-flow` 已验证未来时间范围筛选会排除现有作答记录。
+  - 最近一次验证读到 12 条班级作答记录、1 条高一筛选作答记录、0 条未来时间范围作答记录。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+- 新增老师端导出和下钻验证：
+  - `npm run verify:teacher-flow` 通过，已验证 CSV 导出包含班级、薄弱知识点和学生摘要。
+  - `npm run verify:teacher-flow` 已验证知识点下钻可返回相关学生名单和讲评建议。
+  - 最近一次验证读到 15 条班级作答记录、7 条知识点下钻学生记录、703 字节 CSV。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+- 新增老师端学生个人下钻验证：
+  - `npm run verify:teacher-flow` 通过，已验证学生个人下钻返回错题清单、个人薄弱知识点和复盘建议。
+  - 最近一次验证读到 18 条班级作答记录、3 条个人错题记录。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+- 新增老师端错题导出和复盘任务分配验证：
+  - `npm run verify:teacher-flow` 通过，已验证学生错题 CSV 导出和个人复盘任务分配。
+  - 最近一次验证读到 21 条班级作答记录、3 条个人错题记录、601 字节学生错题 CSV，并成功分配 3 个复盘任务。
+- 新增老师端和学生端复盘联动验证：
+  - `npm run verify:teacher-flow` 通过，已验证学生报告可读取老师分配的复盘任务、学生可完成复盘任务、老师端可看到完成反馈。
+  - 最近一次验证读到 24 条班级作答记录、3 个分配复盘任务、1 个已完成复盘任务和 1 条 `review_completed` 奖励事件。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+- 新增管理端筛选方案和批量预览验证：
+  - `npm run verify:admin-flow` 通过，已验证管理端题库筛选、单题维护、批量维护和学生端发布边界仍正常。
+  - `npm test` 通过，业务红线测试已覆盖“保存筛选方案”和“批量操作预览”入口。
+  - `npm run typecheck` 通过。
+- 新增管理端筛选方案导入导出和批量二次确认验证：
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖“导出筛选方案”“导入筛选方案”和“批量操作二次确认”入口。
+  - `npm run build` 通过，Next.js 生产构建成功。
+- 新增复盘任务增强验证：
+  - `npm run db:generate` 通过，Prisma Client 已识别 `studentReviewNote` 字段。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖复盘笔记、同类题复测入口和复盘状态筛选。
+  - `npm run build` 通过，Next.js 生产构建成功。
+  - `npm run db:push` 已通过，`studentReviewNote` 字段已同步到 PostgreSQL。
+  - `npm run verify:teacher-flow` 已通过，验证复盘笔记落库、`reviewStatus=assigned` 筛选和老师端完成反馈。
+- 新增复盘提醒验证：
+  - `npm run db:generate` 通过，Prisma Client 已识别 `reviewReminderCount` 和 `lastReviewReminderAt` 字段。
+  - `npm run db:push` 通过，复盘提醒字段已同步到 PostgreSQL。
+  - `npm run verify:teacher-flow` 通过，验证老师提醒待复盘任务后，学生完成复盘仍保留提醒次数，老师端可回读提醒记录。
+  - 最近一次验证读到 30 条班级作答记录、3 个分配复盘任务、3 个提醒复盘任务、1 个已完成复盘任务和 1 条 `review_completed` 奖励事件。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖提醒复盘接口和复盘笔记质量提示。
+  - `npm run build` 通过，Next.js 已识别 `/api/teacher/classes/students/[id]/review-tasks/remind` 路由。
+- 新增同类题复测结果回写验证：
+  - `npm run db:push` 通过，复测结果字段已同步到 PostgreSQL。
+  - `npm run verify:teacher-flow` 通过，验证学生提交带 `reviewTaskId` 的同类题复测答案后，复测题目、作答记录、正确性和完成时间会回写到复盘任务。
+  - 最近一次验证读到 33 条班级作答记录、3 个分配复盘任务、3 个提醒复盘任务、1 个已完成复盘任务、1 条 `review_completed` 奖励事件，并确认 `retestRecorded=true`。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖同类题复测回写入口、仓库字段和老师端复测结果展示。
+  - `npm run build` 通过。
+- 新增老师端批量提醒和提醒冷却验证：
+  - `npm run verify:teacher-flow` 通过，验证老师可批量提醒多名有待复盘任务的学生。
+  - 验证立即重复提醒会命中冷却逻辑，并返回 `skippedDueToCooldown` 跳过数量。
+  - 验证 `reminderStatus=reminded` 可筛选出已有提醒记录的学生。
+  - 最近一次验证读到 37 条班级作答记录、3 个分配复盘任务、3 个批量提醒任务、3 个冷却跳过任务、1 个已完成复盘任务、1 条 `review_completed` 奖励事件，并确认 `retestRecorded=true`。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖批量提醒接口、提醒状态筛选和提醒冷却。
+  - `npm run build` 通过，Next.js 已识别 `/api/teacher/classes/review-tasks/remind` 路由。
+- 新增复测迁移汇总和个人建议验证：
+  - `npm run verify:teacher-flow` 通过，验证班级报告返回 `retestSummary`，并统计复测成功、继续巩固和待复测任务。
+  - 验证学生摘要返回 `successfulRetestCount` 和个人复测建议，能识别“已迁移成功”的学生。
+  - 最近一次验证读到 41 条班级作答记录、3 个批量提醒任务、3 个冷却跳过任务、3 个复测迁移成功任务、18 个待复测任务、1 条 `review_completed` 奖励事件，并确认 `retestRecorded=true`。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖复测迁移汇总和个人建议入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增复测结果筛选验证：
+  - `npm run verify:teacher-flow` 通过，验证 `retestStatus=success` 可按复测迁移成功筛选学生。
+  - 最近一次验证读到 45 条班级作答记录、4 个复测迁移成功任务、20 个待复测任务，并筛出 4 名有迁移成功记录的学生。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖复测结果筛选参数、页面控件和验证脚本。
+  - `npm run build` 通过，生产构建成功。
+- 新增复盘趋势统计和分层复盘建议验证：
+  - `npm run verify:teacher-flow` 通过，验证班级报告返回 `reviewTrend` 和 `reviewGroups`。
+  - 最近一次验证读到 52 条班级作答记录、5 个复测迁移成功任务、22 个待复测任务、5 个近 7 天完成复测记录和 3 个分层复盘建议组。
+  - 验证过程中曾出现一次临时开发服务对错题导出路由返回 404，重启临时服务后同一路由恢复 200，最终端到端验证通过。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖复盘趋势和分层复盘建议。
+  - `npm run build` 通过，生产构建成功。
+- 新增学生端复测后下一步行动验证：
+  - `npm run verify:teacher-flow` 通过，验证同类题复测提交响应返回 `nextAction=challenge_variant`。
+  - 验证学生报告中的复盘任务可读回复测后的下一步行动，学生端可据此继续进入变式题挑战或前置知识巩固。
+  - 最近一次验证读到 56 条班级作答记录、6 个复测迁移成功任务、24 个待复测任务、6 个近 7 天完成复测记录和 3 个分层复盘建议组。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖复测下一步行动字段和学生端入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增老师端分层筛选和复盘跟进导出验证：
+  - `npm run verify:teacher-flow` 通过，验证 `reviewGroup=pending_retest` 可按分层建议筛出待复测学生。
+  - 验证 `/api/teacher/classes/review-followups/export` 返回 CSV，并包含“复盘跟进名单”和“待复测”。
+  - 最近一次验证读到 60 条班级作答记录、7 个复测迁移成功任务、26 个待复测任务、11 名待复测分层学生和 1148 字节复盘跟进 CSV。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖分层筛选参数、复盘跟进导出接口和老师端入口。
+  - `npm run build` 通过，生产构建成功，Next.js 已识别 `/api/teacher/classes/review-followups/export` 路由。
+- 新增学生端下一步行动状态和奖励验证：
+  - `npm run verify:teacher-flow` 通过，验证学生完成同类题复测后可继续完成变式题挑战。
+  - 验证变式题挑战成功后返回 `nextActionReward`，并写入 1 条 `breakthrough` 成长奖励。
+  - 验证学生报告中的复盘任务 `nextAction.status` 可更新为 `completed`，学生端显示下一步任务状态。
+  - 最近一次验证读到 64 条班级作答记录、8 个复测迁移成功任务、28 个待复测任务、12 名待复测分层学生、1241 字节复盘跟进 CSV 和 1 条变式挑战突破奖励。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖下一步行动奖励、奖励防重复查询、任务状态文案和学生端入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增老师端批量分配下一轮任务验证：
+  - `npm run verify:teacher-flow` 通过，验证老师可基于复盘跟进名单批量分配下一轮变式题挑战任务。
+  - 验证 `/api/teacher/classes/review-tasks/next-round` 会把符合条件的学生写入 `assigned_review:<teacherId>` 任务，且任务来源仍基于已发布题目的复盘记录。
+  - 最近一次验证读到 69 条班级作答记录、9 个复测迁移成功任务、31 个待复测任务、13 名待复测分层学生和 1 个下一轮变式挑战任务。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖下一轮任务接口、仓库方法、老师端按钮和验证脚本。
+  - `npm run build` 通过，生产构建成功，Next.js 已识别 `/api/teacher/classes/review-tasks/next-round` 路由。
+- 新增学生端今日任务和成长轨迹验证：
+  - `npm run verify:teacher-flow` 通过，验证学生报告返回今日任务、已完成任务和成长轨迹。
+  - 验证完成复盘后 `todayTasks` 包含待完成复盘任务，完成变式挑战后 `completedTasks` 包含已完成挑战，`growthTimeline` 包含 `breakthrough` 奖励。
+  - 最近一次验证读到 74 条班级作答记录、10 个复测迁移成功任务、34 个待复测任务、14 名待复测分层学生和 1 个下一轮变式挑战任务。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖学生报告今日任务、已完成任务、成长轨迹和学生端展示入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增下一轮任务汇总和任务类型筛选验证：
+  - `npm run verify:teacher-flow` 通过，验证 `nextRoundSummary` 可统计下一轮变式题挑战任务。
+  - 验证 `reviewTaskType=variant_challenge` 可筛出包含变式挑战任务的学生，且报告回显筛选条件。
+  - 最近一次验证读到 79 条班级作答记录、11 个复测迁移成功任务、37 个待复测任务、15 名待复测分层学生、3 个下一轮变式待完成任务、3 名任务类型筛选学生、2 条今日任务和 4 条成长轨迹记录。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖下一轮任务汇总、任务类型筛选、老师端页面入口和验证脚本。
+  - `npm run build` 通过，生产构建成功。
+- 新增学生端本周成长和核心素养成长摘要验证：
+  - `npm run verify:teacher-flow` 通过，验证学生报告返回 `weeklyGrowthSummary` 和 `coreLiteracyGrowth`。
+  - 验证本周成长摘要统计 XP 和 `breakthrough` 突破奖励，核心素养成长摘要返回作答次数、鼓励语和下一步行动。
+  - 最近一次验证读到 84 条班级作答记录、12 个复测迁移成功任务、40 个待复测任务、16 名待复测分层学生、4 个下一轮变式待完成任务、49 点本周成长 XP、1 次本周突破和 3 个核心素养成长维度。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖本周成长摘要、核心素养成长摘要和学生端展示入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增下一轮任务学生名单和任务类型导出细分验证：
+  - `npm run verify:teacher-flow` 通过，验证学生完成下一轮变式挑战任务后，老师端 `nextRoundSummary.taskBreakdown.completedStudents` 可看到该学生。
+  - 验证老师端“下一轮任务”面板可展示待完成学生和已完成学生，并支持点击进入个人下钻。
+  - 验证 `/api/teacher/classes/review-followups/export?reviewTaskType=variant_challenge` 导出的 CSV 包含“下一轮任务类型明细”和“变式题挑战”。
+  - 最近一次验证读到 89 条班级作答记录、13 个复测迁移成功任务、43 个待复测任务、17 名待复测分层学生、4 个下一轮变式待完成任务、1 个下一轮变式已完成任务、20% 下一轮任务完成率、5 名任务类型筛选学生、1070 字节任务类型 CSV、49 点本周成长 XP、1 次本周突破和 3 个核心素养成长维度。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖下一轮任务学生名单、任务类型导出明细和验证脚本。
+  - `npm run build` 通过，生产构建成功。
+- 新增老师端二次任务完成反馈和评价备注验证：
+  - `npm run db:generate` 通过，Prisma Client 已识别 `teacherFeedbackNote`、`teacherFeedbackAt` 和 `teacherFeedbackBy` 字段。
+  - `npm run db:push` 通过，老师评价备注字段已同步到 PostgreSQL。
+  - `npm run verify:teacher-flow` 通过，验证学生完成下一轮变式挑战任务后，老师可保存评价备注。
+  - 验证老师端学生详情可显示老师备注、二次任务完成反馈和课堂讲评建议。
+  - 验证班级报告 `nextRoundSummary.taskBreakdown` 可统计老师备注数，并返回任务类型讲评建议。
+  - 验证 `reviewTaskType=variant_challenge` 的复盘跟进 CSV 包含“课堂讲评建议”。
+  - 最近一次验证读到 94 条班级作答记录、14 个复测迁移成功任务、46 个待复测任务、18 名待复测分层学生、4 个下一轮变式待完成任务、2 个下一轮变式已完成任务、33% 下一轮任务完成率、6 名任务类型筛选学生、1821 字节任务类型 CSV、49 点本周成长 XP、1 次本周突破和 3 个核心素养成长维度。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖老师评价备注接口、老师端页面入口和验证脚本。
+  - `npm run build` 通过，生产构建成功，Next.js 已识别 `/api/teacher/classes/students/[id]/review-tasks/[taskId]/feedback` 路由。
+- 新增学生端周成长回顾、核心素养目标和阶段徽章验证：
+  - `npm run db:generate` 通过，Prisma Client 已识别 `StudentLearningGoal`。
+  - `npm run db:push` 通过，学生学习目标表已同步到 PostgreSQL。
+  - `npm run verify:teacher-flow` 通过，验证学生报告返回 `weeklyReviewCards`、`coreLiteracyGoals` 和 `milestoneBadges`。
+  - 验证学生可通过 `/api/student/core-literacy-goals` 选择 `evidence_model` 核心素养目标，并在再次读取报告时回显已选择目标。
+  - 最近一次验证读到 99 条班级作答记录、15 个复测迁移成功任务、49 个待复测任务、19 名待复测分层学生、4 个下一轮变式待完成任务、3 个下一轮变式已完成任务、43% 下一轮任务完成率、7 名任务类型筛选学生、2065 字节任务类型 CSV、3 张周成长回顾卡、5 个核心素养目标、4 个阶段徽章、49 点本周成长 XP、1 次本周突破和 3 个核心素养成长维度。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖周成长回顾卡、核心素养目标接口、阶段徽章和学生端展示入口。
+  - `npm run build` 通过，生产构建成功，Next.js 已识别 `/api/student/core-literacy-goals` 路由。
+- 新增老师端评价备注筛选、讲评清单和导出验证：
+  - `/api/teacher/classes/overview`、班级报告 CSV 和复盘跟进 CSV 均支持 `feedbackStatus=noted|pending_feedback`。
+  - 老师端班级报告新增“老师备注讲评清单”，汇总已有备注、待写备注、任务类型、知识点、备注内容和课堂讲评建议。
+  - 老师端学生摘要新增老师备注数和待写备注数，便于定位可讲评素材和需要补写观察的完成任务。
+  - `npm run verify:teacher-flow` 通过，验证已有备注筛选、待写备注筛选和复盘跟进 CSV 中的“老师备注讲评清单”。
+  - 最近一次验证读到 104 条班级作答记录、16 个复测迁移成功任务、52 个待复测任务、20 名待复测分层学生、4 个下一轮变式已完成任务、50% 下一轮任务完成率、3 条老师备注讲评清单、3 名已有备注筛选学生、19 名待写备注筛选学生和 2292 字节备注跟进 CSV。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖备注状态接口参数、老师端页面入口、讲评清单和验证脚本。
+  - `npm run build` 通过，生产构建成功。
+- 新增学生端核心素养目标完成、奖励和历史验证：
+  - 学生选择核心素养目标后，系统只统计选择之后的相关作答证据；达到 2 次相关作答且至少 1 次稳定作答后自动完成目标。
+  - 完成目标后写入 `StudentLearningGoal.completedAt`，并创建 `literacy_progress` 奖励事件，避免重复发奖。
+  - 学生报告新增 `coreLiteracyGoalHistory`，学生端展示“目标完成记录”，已完成目标显示奖励说明。
+  - `npm run verify:teacher-flow` 通过，验证 `evidence_model` 目标选择、后续作答完成、`literacy_progress` 奖励和历史记录。
+  - 最近一次验证读到 109 条班级作答记录、17 个复测迁移成功任务、55 个待复测任务、21 名待复测分层学生、1 条核心素养进步奖励、1 条核心素养目标历史、4 条老师备注讲评清单、4 名已有备注筛选学生、20 名待写备注筛选学生和 2677 字节备注跟进 CSV。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过，已覆盖核心素养目标完成判定、目标历史、奖励工厂和学生端展示入口。
+  - `npm run build` 通过，生产构建成功。
+- 新增子代理并行收口能力：
+  - 老师端新增 `/api/teacher/classes/teaching-materials` 和 `/api/teacher/classes/teaching-materials/export`，支持按知识点或任务类型生成规则型课堂讲评模板，并导出 CSV/Markdown。
+  - 课堂讲评模板不接 AI、不落库；未发布或下架题目不导出题干和解析，学生端没有模板入口。
+  - 学生端核心素养目标升级为多周期，支持 `periodType`、`periodKey`、`startedAt`、`dueAt`、`reopenedFromGoalId`、`completionSnapshot` 和 `rewardEventId`。
+  - 学生端支持推荐下一核心素养目标、已完成目标下周期重新开启、目标历史筛选；完成判定只统计目标 `startedAt` 后的已发布题目稳定证据，过快或疑似猜测作答不计入且不展示负面标签。
+  - 管理端新增服务端题库筛选方案，支持个人方案、角色模板和共享方案。
+  - 管理端批量维护改为服务端预览 + `previewToken` + 原因 + 确认文本，完成后生成 `AdminBatchOperation` 和逐题 `AuditRecord.batchId`，并支持按批次 ID、目标 ID、动作检索审计记录。
+  - 管理端批量维护不能直接把题目改为 `published`，避免绕过一审审核边界。
+  - 新增 `docs/test-reports/2026-05-17-overall-test-report.md` 和 `docs/TEST_REPORT.md`，记录全量测试结果入口。
+  - `npm run db:generate` 通过。
+  - `npx prisma db push --accept-data-loss` 通过，用于本地测试库确认新增学生目标周期唯一键。
+  - `npm run db:seed` 通过。
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，19 条业务红线测试全通过。
+  - `npm run build` 通过，生产构建成功。
+  - `npm run verify:db-flow` 通过，最近一次写入 2 条答题记录、1 条补救路径、1 条奖励事件，排行榜返回 26 条成长记录。
+  - `npm run verify:review-flow` 通过，最近一次验证导入 4 道候选题、低置信度转需修改 1 条、审核记录检查 23 条。
+  - `npm run verify:teacher-flow` 通过，最近一次验证课堂讲评素材 5 条、模板分组 1 个、未发布题脱敏 1 条、CSV 1909 字节、Markdown 982 字节。
+  - `npm run verify:admin-flow` 通过，最近一次验证批量更新 2 道题、批量操作 ID `batch_e6427a3cc2e24f299e082017`、筛选方案范围包含 personal、role、shared。
+- 上轮构建说明：
+  - `npm run typecheck` 通过。
+  - `npm test` 通过，18 条业务红线测试全通过。
+  - `npm run build` 因本机磁盘剩余空间不足失败，错误为 `No space left on device`；已清理本项目半成品 `.next` 构建缓存。
+  - 本轮磁盘空间恢复后，`npm run build` 已通过。
+
+浏览器验证：
+
+- 打开 `/student` 正常。
+- 浏览器实测注册新学生账号正常。
+- 登录后学生端显示当前学习档案。
+- 登录状态下提交错题会调用后端接口并触发补救建议。
+- 答错“酸碱盐基础”题目后，系统提示补清前置知识“酸碱指示剂”。
+- 点击“先补前置知识”后进入前置知识点，并获得成长奖励。
+- 点击“回到原知识点复测”后回到“酸碱盐基础”。
+- 排行榜和学习报告区域正常展示。
+- 学生端注册并答对 1 题后，底部排行榜和个人统计会刷新为数据库真实数据。
+- `/review` 审核台可显示待审核 AI 候选题。
+- `/review` 一审通过后显示发布成功，并清空待审核队列。
+- 验证 `/api/student/questions/next` 可读取一审发布后的题目。
+- 验证审核权限、修改后通过和批量通过接口均正常。
+- `/teacher` 可注册老师账号并展示真实班级诊断看板。
+- `/admin` 可注册管理员账号并展示真实题库、知识点和知识图谱关系。
+- `/admin` 可添加 AI 模型配置并创建后台任务；浏览器验证确认 API Key 明文不出现在页面中。
+- `/admin` 可导入整卷文本并生成待审核题；`/review` 可看到新导入候选题。
+- `/admin` 可执行 AI 后台任务；浏览器验证任务状态可进入 `needs_review`。
+- `/review` 可显示审核筛选控件；Docker/PostgreSQL 未恢复时无法完成队列数据筛选实测。
+- `/review` 可显示低置信度批处理和审核历史入口；Docker/PostgreSQL 未恢复时无法完成数据流实测。
+
+## 重要说明
+
+- 当前是正式工程骨架和学生端 MVP 原型，还不是完整后端系统。
+- 视觉升级第二波已在本机和 Ubuntu 测试机完整通过验证；测试机当前地址为 `172.53.63.166`，访问地址为 `http://172.53.63.166:4174`。
+- 题库和学习记录已具备 Prisma 仓库实现；当前 Docker/PostgreSQL 已恢复，并已完成学生学习链路与审核链路数据库端到端验证。
+- 注册登录 API 已具备 Prisma User 表实现；当前 `.env` 已配置 `DATABASE_URL`，应用会优先使用 PostgreSQL。
+- AI 能力中心已有模型配置、任务队列、整卷拆题导入和 worker MVP；默认/备用模型路由、失败重跑、尝试日志和结构化输出校验已有基础版本，真实模型调用需要后端设置 `AI_WORKER_MODE=live` 并配置可用模型 API。
+- 人工审核已有 MVP 闭环，已支持权限、修改后通过、批量通过、低置信度转需修改、审核历史、审核记录详情、审核历史筛选联动和 AI 重析入口；数据库端到端验证已覆盖整卷拆题、筛选、批处理、AI 重析和一审发布。
+- 老师端已有“我的班级”授权入口、班级报告、题型错题讲评、核心素养讲评、年级筛选、时间范围筛选、报告导出、知识点下钻、学生个人下钻、错题清单、错题导出、复盘任务分配、复盘完成反馈、按复盘状态筛选学生、按提醒状态筛选学生、按复测结果筛选学生、查看学生复盘笔记、提醒待复盘任务、批量提醒多名学生、提醒冷却、查看复测迁移结果、班级复测迁移汇总、个人复测建议、复盘趋势统计、分层复盘建议、按分层建议筛选学生、复盘跟进名单导出、批量分配下一轮任务、下一轮任务完成汇总、下一轮任务待完成/已完成学生名单、按任务类型筛选学生、任务类型导出细分、二次任务完成反馈、课堂讲评建议、老师评价备注、按备注状态筛选、老师备注讲评清单和显式班级授权校验 MVP；学生端已有老师复盘任务列表、复盘笔记、复盘笔记质量提示、同类题复测入口、复测结果回写、复测后下一步行动、下一步行动状态、变式挑战/前置巩固奖励、今日任务、已完成任务、成长轨迹、本周成长摘要、核心素养成长摘要、按周成长回顾卡、核心素养目标选择、核心素养目标完成奖励与历史、阶段性鼓励徽章和完成复盘奖励 MVP；管理端已有学校/班级/教师授权/班主任角色/学生入班、学校汇总报表、题库查看、题库筛选、筛选条件本地保存、筛选方案命名保存、筛选方案本地 JSON 导入/导出、题目元数据维护、答案解析维护、审核状态维护、知识点挂接维护、核心素养标签维护、批量维护、批量操作预览、批量操作二次确认和知识图谱维护 MVP。
+
+## 下一步建议
+
+优先级从高到低：
+
+1. 继续完善学校级部署细节：更细的校级管理员权限、教师账号搜索选择、学生批量入班和班级停用/转班流程。
+2. 强化学校级数据看板：增加按时间范围、年级、班级角色和核心素养维度的筛选，以及更适合校领导查看的趋势图。
+3. 继续完善 AI 实接能力：在 `AI_WORKER_MODE=live` 下接入真实模型调用，并保持所有 AI 输出进入人工审核。
